@@ -13,12 +13,25 @@ class CustomTextField extends StatefulWidget {
     this.textStyle,
     this.hintStyle,
     this.fillColor,
+    this.borderColor,
+    this.focusedBorderColor,
+    this.enabledBorderColor,
+    this.contentPadding,
+    this.maxLines,
+    this.minLines,
   });
+  final int? maxLines;
+  final int? minLines;
 
   final String hint;
   final IconData? icon;
   final bool isPassword;
   final BorderRadius radius;
+  final EdgeInsets? contentPadding;
+
+  final Color? borderColor;
+  final Color? focusedBorderColor;
+  final Color? enabledBorderColor;
 
   final TextEditingController? controller;
   final TextInputType? keyboardType;
@@ -43,7 +56,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
       onChanged: widget.onChanged,
       obscureText: widget.isPassword ? isObscure : false,
       style: widget.textStyle,
+      maxLines: widget.isPassword ? 1 : widget.maxLines,
+      minLines: widget.minLines,
+
       decoration: InputDecoration(
+        contentPadding: widget.contentPadding,
         hintText: widget.hint,
         hintStyle: widget.hintStyle,
 
@@ -55,9 +72,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         suffixIcon: widget.isPassword
             ? IconButton(
                 icon: Icon(
-                  isObscure
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility,
+                  isObscure ? Icons.visibility_off_outlined : Icons.visibility,
                 ),
                 onPressed: () {
                   setState(() {
@@ -69,13 +84,20 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
         border: OutlineInputBorder(
           borderRadius: widget.radius,
+          borderSide: BorderSide(color: widget.borderColor ?? Colors.grey),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: widget.radius,
+          borderSide: BorderSide(
+            color: widget.enabledBorderColor ?? Colors.grey,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: widget.radius,
-          borderSide: BorderSide(color: Colors.teal),
+          borderSide: BorderSide(
+            color: widget.focusedBorderColor ?? Colors.teal,
+            width: 2,
+          ),
         ),
       ),
     );

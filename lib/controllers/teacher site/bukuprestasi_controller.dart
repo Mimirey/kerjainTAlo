@@ -24,6 +24,9 @@ class BukuprestasiController extends GetxController{
   void goToInputPerkembangan() {
     Get.toNamed(AppRoutes.inputharianPage, arguments: student.value);
   }
+    void goToInputJilid() {
+    Get.toNamed(AppRoutes.inputjilidPage, arguments: student.value);
+  }
 
   // void goToInputJilid() {
   //   Get.toNamed('/input-jilid', arguments: student.value);

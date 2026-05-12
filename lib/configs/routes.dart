@@ -6,4 +6,5 @@ class AppRoutes{
   static const String profilePage = "/profilePage";
   static const String bukuprestasiPage = "/bukuprestasiPage";
   static const String inputharianPage = "/inputharianPage";
+  static const String inputjilidPage = "/inputjilidPage";
 }
