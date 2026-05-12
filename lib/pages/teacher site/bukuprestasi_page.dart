@@ -325,6 +325,7 @@ class BukuprestasiPage extends GetView<BukuprestasiController> {
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
+                            onTap: controller.goToInputJilid,
                           ),
                         ],
                       ),

@@ -16,15 +16,13 @@ class CustomStarrating extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: List.generate(max, (index){
-        return Center(
-          child: IconButton(
-            onPressed: ()=> onChanged(index + 1), 
-            icon: Icon(
-              Icons.star_rounded,
-              color: index < value ? Colors.yellow : Colors.grey.shade300,
-              size: 35,
-            )),
-        );
+        return IconButton(
+          onPressed: ()=> onChanged(index + 1), 
+          icon: Icon(
+            Icons.star_rounded,
+            color: index < value ? Colors.yellow : Colors.grey.shade300,
+            size: 35,
+          ));
       }),
     );
   }

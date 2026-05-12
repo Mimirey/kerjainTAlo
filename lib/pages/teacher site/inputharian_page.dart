@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:projectquranmu_application/components/custom_audioinput.dart';
+import 'package:projectquranmu_application/components/custom_button.dart';
+import 'package:projectquranmu_application/components/custom_datefield.dart';
 import 'package:projectquranmu_application/components/custom_starrating.dart';
 import 'package:projectquranmu_application/components/custom_statusselector.dart';
 import 'package:projectquranmu_application/components/custom_textfield.dart';
@@ -56,7 +59,14 @@ class InputharianPage extends GetView<InputHarianController> {
                         fontSize: 16,
                       ),
                     ),
-                    CustomTextField(hint: "Ini kudunya kalender"),
+
+                    Obx(
+                      () => CustomDatefield(
+                        label: "Tgl/Bulan/Tahun",
+                        selectedDate: controller.selectedDate.value,
+                        onDateSelected: controller.setDate,
+                      ),
+                    ),
                     Row(
                       children: [
                         Expanded(
@@ -73,7 +83,10 @@ class InputharianPage extends GetView<InputHarianController> {
                                     fontSize: 16,
                                   ),
                                 ),
-                                CustomTextField(hint: "Jilid..."),
+                                CustomTextField(
+                                  hint: "Jilid...",
+                                  borderColor: Colors.grey.shade400,
+                                ),
                               ],
                             ),
                           ),
@@ -92,7 +105,10 @@ class InputharianPage extends GetView<InputHarianController> {
                                     fontSize: 16,
                                   ),
                                 ),
-                                CustomTextField(hint: "Halaman..."),
+                                CustomTextField(
+                                  hint: "Halaman...",
+                                  borderColor: Colors.grey.shade400,
+                                ),
                               ],
                             ),
                           ),
@@ -114,10 +130,12 @@ class InputharianPage extends GetView<InputHarianController> {
                         border: Border.all(color: Colors.grey.shade400),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Obx(()=>
-                      CustomStatusselector(
-                        value: controller.status.value, 
-                        onChanged: controller.setStatus)),
+                      child: Obx(
+                        () => CustomStatusselector(
+                          value: controller.status.value,
+                          onChanged: controller.setStatus,
+                        ),
+                      ),
                     ),
 
                     Text(
@@ -135,9 +153,19 @@ class InputharianPage extends GetView<InputHarianController> {
                         border: Border.all(color: Colors.grey.shade400),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Obx(()=> CustomStarrating(
-                        value: controller.tajwid.value, 
-                        onChanged: controller.setTajwid)),
+                      child: Center(
+                        child: Obx(
+                          () => Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CustomStarrating(
+                                value: controller.tajwid.value,
+                                onChanged: controller.setTajwid,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
 
                     Text(
@@ -155,9 +183,17 @@ class InputharianPage extends GetView<InputHarianController> {
                         border: Border.all(color: Colors.grey.shade400),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Obx(()=>CustomStarrating(
-                        value: controller.makhraj.value, 
-                        onChanged: controller.setMakhraj)),
+                      child: Obx(
+                        () => Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CustomStarrating(
+                              value: controller.makhraj.value,
+                              onChanged: controller.setMakhraj,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
 
                     Text(
@@ -167,6 +203,40 @@ class InputharianPage extends GetView<InputHarianController> {
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 20),
+                      child: CustomTextField(
+                        hint: "Catatan dari guru...",
+                        borderColor: Colors.grey.shade400,
+                        minLines: 5,
+                        maxLines: null,
+                      ),
+                    ),
+
+                    Text(
+                      "Catatan Audio",
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 20),
+                      child: CustomAudioInput(
+                        controller: controller,
+                        onRecorded: (path) {
+                          controller.setAudio(path); // masuk ke report
+                        },
+                      ),
+                    ),
+
+                    CustomButton(
+                      text: "Tambahkan",
+                      onTap: () {
+                        controller.submit();
+                      },
                     ),
                   ],
                 ),

@@ -2,12 +2,14 @@ import 'package:get/get.dart';
 import 'package:projectquranmu_application/bindings/app_binding.dart';
 import 'package:projectquranmu_application/bindings/teacher%20site/bukuprestasi_binding.dart';
 import 'package:projectquranmu_application/bindings/teacher%20site/inputharian_binding.dart';
+import 'package:projectquranmu_application/bindings/teacher%20site/inputjilid_binding.dart';
 import 'package:projectquranmu_application/bindings/teacher%20site/teacherreport_binding.dart';
 import 'package:projectquranmu_application/bindings/login_binding.dart';
 import 'package:projectquranmu_application/configs/routes.dart';
 import 'package:projectquranmu_application/pages/attachment.dart';
 import 'package:projectquranmu_application/pages/teacher%20site/bukuprestasi_page.dart';
 import 'package:projectquranmu_application/pages/teacher%20site/inputharian_page.dart';
+import 'package:projectquranmu_application/pages/teacher%20site/inputjilid_page.dart';
 import 'package:projectquranmu_application/pages/teacher%20site/reportteacher_page.dart';
 import 'package:projectquranmu_application/pages/teacher%20site/hometeacher_page.dart';
 import 'package:projectquranmu_application/pages/login_pages.dart';
@@ -43,6 +45,11 @@ class AppPages{
       name: AppRoutes.inputharianPage, 
       page: ()=>InputharianPage(),
       binding: InputharianBinding()
+      ),
+      GetPage(
+      name: AppRoutes.inputjilidPage, 
+      page: ()=>InputjilidPage(),
+      binding: InputjilidBinding()
       ),
     
   ];

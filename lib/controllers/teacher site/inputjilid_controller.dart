@@ -5,20 +5,14 @@ import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:projectquranmu_application/controllers/base_audio_controller.dart';
-import 'package:record/record.dart';
 
-class InputHarianController extends BaseAudioController {
+class InputjilidController extends BaseAudioController {
   // state
-  var status = ''.obs;
+  var selectedJilid = "Yanbua 3".obs;
+  var status = 0.obs;
   var tajwid = 0.obs;
   var makhraj = 0.obs;
   var selectedDate = Rxn<DateTime>();
-
-  final player = AudioPlayer();
-  bool get hasAudio => audioPath.value != null;
-  Timer? _timer;
-
-  var isPlaying = false.obs;
 
   @override
   final isRecording = false.obs;
@@ -37,14 +31,14 @@ class InputHarianController extends BaseAudioController {
 
   @override
   final recorderController = RecorderController();
+  final player = AudioPlayer();
+  bool get hasAudio => audioPath.value != null;
+  Timer? _timer;
+
+  var isPlaying = false.obs;
 
   void setDate(DateTime date) {
     selectedDate.value = date;
-  }
-
-  // setter
-  void setStatus(String value) {
-    status.value = value;
   }
 
   void setTajwid(int value) {
@@ -54,17 +48,19 @@ class InputHarianController extends BaseAudioController {
   void setMakhraj(int value) {
     makhraj.value = value;
   }
+  void setStatus(int value) {
+    status.value = value;
+  }
 
   // reset (optional)
   void resetForm() {
-    status.value = '';
     tajwid.value = 0;
     makhraj.value = 0;
   }
 
-  // validasi (biar ga kosong pas submit)
+  // // validasi (biar ga kosong pas submit)
   bool isValid() {
-    return status.value.isNotEmpty && tajwid.value > 0 && makhraj.value > 0;
+    return tajwid.value > 0 && makhraj.value > 0;
   }
 
   Future<void> start() async {
@@ -79,8 +75,9 @@ class InputHarianController extends BaseAudioController {
 
       isRecording.value = true;
       duration.value = Duration.zero;
+
       _timer = Timer.periodic(Duration(seconds: 1), (t) {
-        duration.value = Duration.zero;
+        duration.value += const Duration(seconds: 1);
       });
     }
   }
@@ -120,6 +117,7 @@ class InputHarianController extends BaseAudioController {
     await player.stop();
   }
 
+  @override
   String formatTime(Duration d) {
     final m = d.inMinutes.toString().padLeft(2, '0');
     final s = (d.inSeconds % 60).toString().padLeft(2, '0');
@@ -146,7 +144,6 @@ class InputHarianController extends BaseAudioController {
     }
 
     final data = {
-      "status": status.value,
       "tajwid": tajwid.value,
       "makhraj": makhraj.value,
       "audioPath": audioPath.value,
