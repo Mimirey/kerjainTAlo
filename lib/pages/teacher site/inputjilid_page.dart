@@ -73,14 +73,21 @@ class InputjilidPage extends GetView<InputjilidController> {
                         title: "Jilid Selanjutnya",
                         value: controller.selectedJilid.value,
                         icon: Icons.menu_book,
-                        items: ["Yanbua 1", "Yanbua 2", "Yanbua 3", "Yanbua 4"]
-                            .map((jilid) {
+                        items:
+                            [
+                              "JILID_1",
+                              "JILID_2",
+                              "JILID_3",
+                              "JILID_4",
+                              "JILID_5",
+                              "JILID_6",
+                              "JILID_7",
+                            ].map((jilid) {
                               return DropdownMenuItem(
                                 value: jilid,
                                 child: Text(jilid),
                               );
-                            })
-                            .toList(),
+                            }).toList(),
                         onChanged: (value) {
                           if (value != null) {
                             controller.selectedJilid.value = value;
@@ -171,6 +178,7 @@ class InputjilidPage extends GetView<InputjilidController> {
                       margin: EdgeInsets.only(bottom: 20),
                       child: CustomTextField(
                         hint: "Catatan dari guru...",
+                        controller: controller.catatanController,
                         borderColor: Colors.grey.shade400,
                         minLines: 5,
                         maxLines: null,

@@ -44,6 +44,8 @@ dependencies:
   just_audio: ^0.10.5
   audio_waveforms: ^2.0.2
   path_provider: ^2.1.5
+  dio: ^5.9.2
+  flutter_secure_storage: ^10.2.0
 
 dev_dependencies:
   flutter_test:

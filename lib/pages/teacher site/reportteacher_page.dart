@@ -7,7 +7,7 @@ import 'package:projectquranmu_application/components/custom_studentcard.dart';
 import 'package:projectquranmu_application/components/emptystate.dart';
 import 'package:projectquranmu_application/configs/routes.dart';
 import 'package:projectquranmu_application/controllers/teacher%20site/teacherreport_controller.dart';
-import 'package:projectquranmu_application/dummy%20data/dummyStudents.dart';
+
 
 class TeacherReportPage extends GetView<TeacherReportController> {
   const TeacherReportPage({super.key});
@@ -65,7 +65,11 @@ class TeacherReportPage extends GetView<TeacherReportController> {
                ),
 
                Obx((){
-                if (controller.filteredStudents.isEmpty) {
+                if (controller.isLoading.value) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (controller.filteredStudents.isEmpty) {
                   return const EmptyState(
                     title: "Belum ada data", 
                     subtitle: "Data siswa anda akan muncul disini");
@@ -74,7 +78,7 @@ class TeacherReportPage extends GetView<TeacherReportController> {
                   children: controller.filteredStudents.map((student){
                     return GestureDetector(
                       onTap: (){
-                        Get.toNamed(AppRoutes.bukuprestasiPage, arguments: student);
+                        Get.toNamed(AppRoutes.bukuprestasiPage, arguments: student.id);
                       },
                       child: CustomStudentcard(student: student));
                   }).toList()
