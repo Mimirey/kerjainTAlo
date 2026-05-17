@@ -19,7 +19,9 @@ class CustomTextField extends StatefulWidget {
     this.contentPadding,
     this.maxLines,
     this.minLines,
+    this.enabled = true,
   });
+  final bool enabled;
   final int? maxLines;
   final int? minLines;
 
@@ -51,6 +53,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      enabled: widget.enabled,
       controller: widget.controller,
       keyboardType: widget.keyboardType,
       onChanged: widget.onChanged,

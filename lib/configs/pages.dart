@@ -7,6 +7,8 @@ import 'package:projectquranmu_application/bindings/teacher%20site/teacherreport
 import 'package:projectquranmu_application/bindings/login_binding.dart';
 import 'package:projectquranmu_application/configs/routes.dart';
 import 'package:projectquranmu_application/pages/attachment.dart';
+import 'package:projectquranmu_application/pages/ortu%20site/homeortu_page.dart';
+import 'package:projectquranmu_application/pages/ortuattachment.dart';
 import 'package:projectquranmu_application/pages/teacher%20site/bukuprestasi_page.dart';
 import 'package:projectquranmu_application/pages/teacher%20site/inputharian_page.dart';
 import 'package:projectquranmu_application/pages/teacher%20site/inputjilid_page.dart';
@@ -50,6 +52,17 @@ class AppPages{
       name: AppRoutes.inputjilidPage, 
       page: ()=>InputjilidPage(),
       binding: InputjilidBinding()
+      ),
+
+      GetPage(
+      name: AppRoutes.homeortuPage, 
+      page: ()=>HomeortuPage(),
+      binding: InputjilidBinding()
+      ),
+      GetPage(
+      name: AppRoutes.ortuattachmentPage, 
+      page: ()=>Ortuattachment(),
+      binding: AppBinding()
       ),
     
   ];

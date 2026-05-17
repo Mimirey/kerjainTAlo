@@ -1,35 +1,43 @@
 import 'package:get/get.dart';
 import 'package:projectquranmu_application/configs/routes.dart';
+import 'package:projectquranmu_application/models/bukuprestasi_model.dart';
 import 'package:projectquranmu_application/models/student_model.dart';
+import 'package:projectquranmu_application/services/student_service.dart';
+
 
 class BukuprestasiController extends GetxController{
-  var student= Rxn<Student>();
-  var isLoading= false.obs;
+  final StudentService studentService = StudentService();
+
+  final bukuPrestasi = Rxn<BukuPrestasi>();
+
+  late int studentId;
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
-    student.value= Get.arguments;
+
+    studentId = Get.arguments as int;
+
+    fetchBukuPrestasi();
   }
 
-  // void fetchDetail() async {
-  //   isLoading.value = true;
+  Future<void> fetchBukuPrestasi() async {
+    try {
+      final result =
+          await studentService.getBukuPrestasi(studentId);
 
-  //   // TODO: hit API
-  //   await Future.delayed(Duration(seconds: 1));
+      bukuPrestasi.value = result;
+    } catch (e) {
+      print(e);
+    }
+  }
 
-  //   isLoading.value = false;
-  // }
   void goToInputPerkembangan() {
-    Get.toNamed(AppRoutes.inputharianPage, arguments: student.value);
+    Get.toNamed(AppRoutes.inputharianPage, arguments: bukuPrestasi.value);
   }
     void goToInputJilid() {
-    Get.toNamed(AppRoutes.inputjilidPage, arguments: student.value);
+    Get.toNamed(AppRoutes.inputjilidPage, arguments: bukuPrestasi.value);
   }
-
-  // void goToInputJilid() {
-  //   Get.toNamed('/input-jilid', arguments: student.value);
-  // }
+  
 
 }

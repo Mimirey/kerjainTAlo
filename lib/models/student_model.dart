@@ -1,24 +1,36 @@
+import 'package:projectquranmu_application/models/kenaikanjilid_model.dart';
+
 class Student {
-  final String id;
-  final String name;
-  final String kitab;
-  final String laporan;
-  final String status;
-  final String date;
-  final String jilid;     // 1
-  final String halaman; 
+  final int id;
+  final String nama;
+  final int guruId;
+  final String? jilidSekarang;
+  final String jenisKelamin;
+
+  final List<KenaikanJilidModel> kenaikanJilid;
 
   Student({
     required this.id,
-    required this.name,
-    required this.kitab,
-    required this.laporan,
-    required this.status,
-    required this.date,
-    required this.jilid,
-    required this.halaman,
+    required this.nama,
+    required this.guruId,
+    required this.jilidSekarang,
+    required this.jenisKelamin,
+    required this.kenaikanJilid,
   });
 
-  String get fullKitab => "$kitab $jilid hal $halaman";
-  String get shortKitab => "$kitab $jilid";
+  factory Student.fromJson(
+    Map<String, dynamic> json,
+  ) {
+    return Student(
+      id: json['id'],
+      nama: json['nama'],
+      guruId: json['guruId'],
+      jilidSekarang: json['jilidSekarang'],
+      jenisKelamin: json['jenisKelamin'],
+
+      kenaikanJilid: (json['kenaikanJilid'] as List)
+          .map((e) => KenaikanJilidModel.fromJson(e))
+          .toList(),
+    );
+  }
 }

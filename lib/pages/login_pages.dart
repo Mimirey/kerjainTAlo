@@ -63,6 +63,7 @@ class LoginPage extends GetView<LoginController> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 25),
                         child: CustomTextField(
+                          controller: controller.usernameController,
                           hint: "Username", 
                           radius: BorderRadius.circular(15),
                           icon: Icons.email_outlined),
@@ -70,6 +71,7 @@ class LoginPage extends GetView<LoginController> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 50),
                         child: CustomTextField(
+                          controller: controller.passwordController,
                           hint: "Password", 
                           radius: BorderRadius.circular(15),
                           icon: Icons.password,
@@ -88,7 +90,7 @@ class LoginPage extends GetView<LoginController> {
                             fontWeight: FontWeight.bold
                           ),
                           onTap: (){
-                            Get.offAllNamed(AppRoutes.attachmentPage);
+                            controller.login();
                           },
                           )
                       ),

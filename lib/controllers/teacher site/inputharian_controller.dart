@@ -1,18 +1,45 @@
 import 'dart:async';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:projectquranmu_application/configs/routes.dart';
 import 'package:projectquranmu_application/controllers/base_audio_controller.dart';
+import 'package:projectquranmu_application/models/bukuprestasi_model.dart';
+import 'package:projectquranmu_application/services/inputharian_service.dart';
+import 'package:projectquranmu_application/utils/dialog_helper.dart';
 import 'package:record/record.dart';
 
 class InputHarianController extends BaseAudioController {
+  String mapStatus(String value) {
+    switch (value) {
+      case "Lancar":
+        return "LANCAR";
+
+      case "Cukup Lancar":
+        return "CUKUP_LANCAR";
+
+      case "Kurang Lancar":
+        return "KURANG_LANCAR";
+
+      default:
+        return "LANCAR";
+    }
+  }
+
+  late BukuPrestasi student;
+  final InputharianService inputHarianService = InputharianService();
+
+  final halamanController = TextEditingController();
+  final catatanController = TextEditingController();
   // state
   var status = ''.obs;
   var tajwid = 0.obs;
   var makhraj = 0.obs;
   var selectedDate = Rxn<DateTime>();
+  bool _isBusy = false;
 
   final player = AudioPlayer();
   bool get hasAudio => audioPath.value != null;
@@ -68,40 +95,69 @@ class InputHarianController extends BaseAudioController {
   }
 
   Future<void> start() async {
-    if (isRecording.value) return;
+    if (isRecording.value || _isBusy) return;
 
-    if (await recorderController.checkPermission()) {
-      final dir = await getApplicationDocumentsDirectory();
-      final path =
-          '${dir.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
+    _isBusy = true;
 
-      await recorderController.record(path: path);
+    try {
+      if (await recorderController.checkPermission()) {
+        final dir = await getApplicationDocumentsDirectory();
 
-      isRecording.value = true;
-      duration.value = Duration.zero;
-      _timer = Timer.periodic(Duration(seconds: 1), (t) {
+        final path =
+            '${dir.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
+
+        await recorderController.record(path: path);
+
+        isRecording.value = true;
+
         duration.value = Duration.zero;
-      });
+
+        _timer?.cancel();
+
+        _timer = Timer.periodic(const Duration(seconds: 1), (t) {
+          duration.value += const Duration(seconds: 1);
+        });
+      }
+    } finally {
+      _isBusy = false;
     }
   }
 
   Future<void> stop() async {
-    if (!isRecording.value) return;
+    if (!isRecording.value || _isBusy) return;
 
-    final path = await recorderController.stop();
-    isRecording.value = false;
-    _timer?.cancel();
+    _isBusy = true;
 
-    if (path != null) {
-      audioPath.value = path;
+    try {
+      final path = await recorderController.stop();
+
+      _timer?.cancel();
+
+      isRecording.value = false;
+
+      if (path != null) {
+        audioPath.value = path;
+      }
+
+      // penting buat native release
+      await Future.delayed(const Duration(milliseconds: 300));
+    } finally {
+      _isBusy = false;
     }
   }
 
   Future<void> playAudio() async {
     if (audioPath.value == null) return;
 
-    await player.setFilePath(audioPath.value!);
-    player.play();
+    try {
+      await player.stop();
+
+      await player.setFilePath(audioPath.value!);
+
+      await player.play();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   Future<void> reset() async {
@@ -134,28 +190,49 @@ class InputHarianController extends BaseAudioController {
     audioPath.value = null;
   }
 
-  // submit (dummy dulu)
-  void submit() {
+  Future<void> submit() async {
     if (!isValid()) {
-      Get.snackbar("Error", "Semua field harus diisi");
+      Get.snackbar("Error", "Semua field wajib diisi");
       return;
     }
+
+    if (halamanController.text.isEmpty) {
+      Get.snackbar("Error", "Halaman belum diisi");
+      return;
+    }
+
     if (isRecording.value) {
-      Get.snackbar("Warning", "Hentikan rekaman dulu");
+      Get.snackbar("Warning", "Hentikan rekaman terlebih dahulu");
       return;
     }
 
-    final data = {
-      "status": status.value,
-      "tajwid": tajwid.value,
-      "makhraj": makhraj.value,
-      "audioPath": audioPath.value,
-    };
+    try {
+      await inputHarianService.createNilai(
+        muridId: student.id,
+        jilid: student.jilidSekarang,
+        halaman: int.parse(halamanController.text),
 
-    print("DATA DIKIRIM: $data");
+        nilaiBacaan: mapStatus(status.value),
 
-    // nanti ganti ini ke API
-    // await ApiService.submitHarian(data);
+        tajwid: tajwid.value,
+
+        makhraj: makhraj.value,
+
+        catatan: catatanController.text,
+
+        audioPath: audioPath.value,
+      );
+
+      await DialogHelper.showSuccess(
+        title: "Berhasil menambahkan!",
+        subtitle: "Perkembangan Harian\n${student.murid}",
+        route: AppRoutes.attachmentPage,
+      );
+    } catch (e) {
+      print(e);
+
+      Get.snackbar("Error", "Gagal mengirim nilai");
+    }
   }
 
   @override
@@ -173,6 +250,8 @@ class InputHarianController extends BaseAudioController {
     player.playerStateStream.listen((state) {
       isPlaying.value = state.playing;
     });
+
+    student = Get.arguments as BukuPrestasi;
   }
 
   Future<void> togglePlay() async {
@@ -200,10 +279,21 @@ class InputHarianController extends BaseAudioController {
   }
 
   @override
-  void onClose() {
+  void onClose() async {
     _timer?.cancel();
+
+    try {
+      if (isRecording.value) {
+        await recorderController.stop();
+      }
+    } catch (e) {
+      debugPrint("Error stopping recorder: $e");
+    }
+
     recorderController.dispose();
-    player.dispose();
+
+    await player.dispose();
+
     super.onClose();
   }
 }

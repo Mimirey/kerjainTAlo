@@ -10,6 +10,7 @@ import 'package:projectquranmu_application/controllers/teacher%20site/inputharia
 
 class InputharianPage extends GetView<InputHarianController> {
   const InputharianPage({super.key});
+  
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +85,9 @@ class InputharianPage extends GetView<InputHarianController> {
                                   ),
                                 ),
                                 CustomTextField(
-                                  hint: "Jilid...",
+                                  hint: controller.student.jilidSekarang,
                                   borderColor: Colors.grey.shade400,
+                                  enabled: false,
                                 ),
                               ],
                             ),
@@ -108,6 +110,8 @@ class InputharianPage extends GetView<InputHarianController> {
                                 CustomTextField(
                                   hint: "Halaman...",
                                   borderColor: Colors.grey.shade400,
+                                  controller: controller.halamanController,
+                                  keyboardType: TextInputType.number,
                                 ),
                               ],
                             ),
@@ -208,6 +212,7 @@ class InputharianPage extends GetView<InputHarianController> {
                       margin: EdgeInsets.only(bottom: 20),
                       child: CustomTextField(
                         hint: "Catatan dari guru...",
+                        controller: controller.catatanController,
                         borderColor: Colors.grey.shade400,
                         minLines: 5,
                         maxLines: null,
