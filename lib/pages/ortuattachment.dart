@@ -5,6 +5,8 @@ import 'package:projectquranmu_application/components/navbar/nav_controller.dart
 import 'package:projectquranmu_application/components/navbar/navbar.dart';
 import 'package:projectquranmu_application/components/navbar/navmodel.dart';
 import 'package:projectquranmu_application/pages/ortu%20site/homeortu_page.dart';
+import 'package:projectquranmu_application/pages/ortu%20site/reportortu_page.dart';
+import 'package:projectquranmu_application/pages/profile_page.dart';
 
 class Ortuattachment extends StatelessWidget {
   Ortuattachment({super.key});
@@ -12,8 +14,8 @@ class Ortuattachment extends StatelessWidget {
 
   final pages = [
     HomeortuPage(),
-    // TeacherReportPage(),
-    // ProfilePage(),
+    ReportortuPage(),
+    ProfilePage(),
   ];
 
   final navItems = [

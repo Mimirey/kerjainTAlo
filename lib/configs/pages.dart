@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:projectquranmu_application/bindings/app_binding.dart';
+import 'package:projectquranmu_application/bindings/profile_binding.dart';
 import 'package:projectquranmu_application/bindings/teacher%20site/bukuprestasi_binding.dart';
 import 'package:projectquranmu_application/bindings/teacher%20site/inputharian_binding.dart';
 import 'package:projectquranmu_application/bindings/teacher%20site/inputjilid_binding.dart';
@@ -8,7 +9,9 @@ import 'package:projectquranmu_application/bindings/login_binding.dart';
 import 'package:projectquranmu_application/configs/routes.dart';
 import 'package:projectquranmu_application/pages/attachment.dart';
 import 'package:projectquranmu_application/pages/ortu%20site/homeortu_page.dart';
+import 'package:projectquranmu_application/pages/ortu%20site/reportortu_page.dart';
 import 'package:projectquranmu_application/pages/ortuattachment.dart';
+import 'package:projectquranmu_application/pages/profile_page.dart';
 import 'package:projectquranmu_application/pages/teacher%20site/bukuprestasi_page.dart';
 import 'package:projectquranmu_application/pages/teacher%20site/inputharian_page.dart';
 import 'package:projectquranmu_application/pages/teacher%20site/inputjilid_page.dart';
@@ -63,6 +66,16 @@ class AppPages{
       name: AppRoutes.ortuattachmentPage, 
       page: ()=>Ortuattachment(),
       binding: AppBinding()
+      ),
+      GetPage(
+      name: AppRoutes.ortureportPage, 
+      page: ()=>ReportortuPage(),
+      binding: AppBinding()
+      ),
+      GetPage(
+      name: AppRoutes.profilePage, 
+      page: ()=>ProfilePage(),
+      binding: ProfileBinding()
       ),
     
   ];
