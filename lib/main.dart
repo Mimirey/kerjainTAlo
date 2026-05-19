@@ -3,8 +3,13 @@ import 'package:get/get.dart';
 import 'package:projectquranmu_application/bindings/app_binding.dart';
 import 'package:projectquranmu_application/configs/pages.dart';
 import 'package:projectquranmu_application/configs/routes.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await initializeDateFormatting('id_ID', null);
+
   runApp(const MyApp());
 }
 

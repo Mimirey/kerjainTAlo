@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:projectquranmu_application/components/navbar/nav_controller.dart';
 import 'package:projectquranmu_application/components/navbar/navbar.dart';
 import 'package:projectquranmu_application/components/navbar/navmodel.dart';
+import 'package:projectquranmu_application/controllers/profile_controller.dart';
 import 'package:projectquranmu_application/pages/profile_page.dart';
 import 'package:projectquranmu_application/pages/teacher%20site/reportteacher_page.dart';
 import 'package:projectquranmu_application/pages/teacher%20site/hometeacher_page.dart';
@@ -10,6 +11,8 @@ import 'package:projectquranmu_application/pages/teacher%20site/hometeacher_page
 class Attachment extends StatelessWidget {
   Attachment({super.key});
   final controller = Get.put(NavigationController());
+  final profileController =
+      Get.put(ProfileController());
 
   final pages = [
     HometeacherPage(),

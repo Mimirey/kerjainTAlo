@@ -108,6 +108,7 @@ class CustomAchievementCard extends StatelessWidget {
           ),
         ],
       ),
+      
     );
   }
 }

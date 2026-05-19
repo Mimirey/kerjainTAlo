@@ -1,57 +1,45 @@
-// featured_report_slider.dart
+// custom_report_slider.dart
 
 import 'package:flutter/material.dart';
 import 'package:projectquranmu_application/components/custom_reportcard.dart';
+import 'package:projectquranmu_application/models/student_model.dart';
 
-class CustomReportSlider extends StatefulWidget {
-  const CustomReportSlider({super.key});
+class CustomReportSlider extends StatelessWidget {
+  final List<Student> students;
+  final int currentIndex;
+  final Function(int) onPageChanged;
+  final PageController pageController;
 
-  @override
-  State<CustomReportSlider> createState() =>
-      _FeaturedReportSliderState();
-}
-
-class _FeaturedReportSliderState
-    extends State<CustomReportSlider> {
-  final PageController controller = PageController(
-    viewportFraction: 0.92,
-  );
-
-  int currentIndex = 0;
-
-  final List<Map<String, dynamic>> reports = [
-    {
-      "name": "Sylviana Jelita",
-      "report": "Laporan Januari 2026",
-    },
-    {
-      "name": "Arsya Muhammad",
-      "report": "Laporan Februari 2026",
-    },
-  ];
+  const CustomReportSlider({
+    super.key,
+    required this.students,
+    required this.currentIndex,
+    required this.onPageChanged,
+    required this.pageController,
+  });
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       children: [
         SizedBox(
           height: 180,
           child: PageView.builder(
-            controller: controller,
-            itemCount: reports.length,
-            onPageChanged: (index) {
-              setState(() {
-                currentIndex = index;
-              });
-            },
+            controller: pageController,
+            itemCount: students.length,
+            onPageChanged: onPageChanged,
+
             itemBuilder: (context, index) {
-              final item = reports[index];
+              final student = students[index];
 
               return Padding(
                 padding: const EdgeInsets.only(right: 12),
                 child: CustomReportcard(
-                  studentName: item["name"],
-                  reportTitle: item["report"],
+                  studentName: student.nama,
+                  reportTitle:
+                      student.jilidSekarang ??
+                      "Belum Ada Jilid",
                   onTap: () {},
                 ),
               );
@@ -64,7 +52,7 @@ class _FeaturedReportSliderState
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
-            reports.length,
+            students.length,
             (index) => AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               margin: const EdgeInsets.symmetric(horizontal: 4),

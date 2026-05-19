@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
+import 'package:intl/intl.dart';
 import 'package:projectquranmu_application/components/custom_achievmentcard.dart';
 import 'package:projectquranmu_application/components/custom_monthselector.dart';
-import 'package:projectquranmu_application/components/custom_studentinfocard.dart';
 import 'package:projectquranmu_application/components/emptystate.dart';
-import 'package:projectquranmu_application/configs/routes.dart';
 import 'package:projectquranmu_application/controllers/ortu%20site/reportortu_controller.dart';
+import 'package:projectquranmu_application/pages/ortu%20site/reportdetail_page.dart';
 
 class ReportortuPage extends GetView<ReportortuController> {
   const ReportortuPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final selectedStudent = controller.selectedStudent.value;
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -30,14 +31,19 @@ class ReportortuPage extends GetView<ReportortuController> {
                     children: [
                       // TITLE TENGAH
                       Center(
-                        child: Text(
-                          "Input Perkembangan Siswa",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        child: Obx(() {
+                          final student = controller.selectedStudent.value;
+
+                          return Text(
+                            student?.nama ?? "Input Perkembangan Siswa",
+
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          );
+                        }),
                       ),
 
                       // ICON KIRI
@@ -72,17 +78,23 @@ class ReportortuPage extends GetView<ReportortuController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Hari Ini / Tanggal", style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black
-                    ),),
-                    Text("Februari, 11 2026", style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.normal,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.grey
-                    ),),
+                    Text(
+                      "Hari Ini / Tanggal",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      "Februari, 11 2026",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal,
+                        fontStyle: FontStyle.italic,
+                        color: Colors.grey,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -97,45 +109,51 @@ class ReportortuPage extends GetView<ReportortuController> {
                 ),
               ),
 
-               Obx((){
-                if (controller.isLoading.value) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (controller.filteredReports.isEmpty) {
-                  return const EmptyState(
-                    title: "Belum ada data", 
-                    subtitle: "Data siswa anda akan muncul disini");
-                }
-                 return Column(
-                  children: controller.filteredReports.map((student){
-                    return GestureDetector(
-                      onTap: (){
-                        Get.toNamed(AppRoutes.bukuprestasiPage, arguments: student);
-                      },
-                      child: CustomAchievementCard(
-                      title: "title", 
-                      date: "date", 
-                      categories: ["a","b","c"], 
-                      teacherName: "teacherName", 
-                      status: "status")
-                     );
-                  }).toList()
-                );
-               })
+              Obx(() {
+                final student = controller.selectedStudent.value;
 
-              // Obx(
-              //   () => Column(
-              //     children: controller.filteredReports.map((report) {
-              //       return CustomAchievementCard(
-              //         title: "title", 
-              //         date: "date", 
-              //         categories: ["a","b","c"], 
-              //         teacherName: "teacherName", 
-              //         status: "status");
-              //     }).toList(),
-              //   ),
-              // ),
+                if (student == null) {
+                  return const EmptyState(
+                    title: "Belum memilih siswa",
+                    subtitle: "Silakan pilih siswa terlebih dahulu",
+                  );
+                }
+
+                if (controller.filteredReports.isEmpty) {
+                  return const EmptyState(
+                    title: "Belum ada laporan",
+                    subtitle: "Laporan perkembangan akan muncul disini",
+                  );
+                }
+
+                return Column(
+                  children: controller.filteredReports.map((report) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 14),
+                      child: InkWell(
+                        onTap: () {
+                          Get.to(()=> DetailPrestasiPage(report: report));
+                        },
+                        child: CustomAchievementCard(
+                          title: "${report.jilid} • Hal ${report.halaman}",
+                          
+                          date: DateFormat(
+                            'dd MMM yyyy',
+                            'id_ID',
+                          ).format(report.tanggal),
+                        
+                          categories: [
+                            "Tajwid ${report.tajwid}",
+                            "Makhraj ${report.makhraj}",
+                          ],
+                          teacherName: report.nilaiBacaan,
+                          status: report.nilaiBacaan,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                );
+              }),
             ],
           ),
         ),

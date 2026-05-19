@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:projectquranmu_application/bindings/app_binding.dart';
+import 'package:projectquranmu_application/bindings/ortu%20site/homeortu_binding.dart';
+import 'package:projectquranmu_application/bindings/ortu%20site/reportortu_binding.dart';
 import 'package:projectquranmu_application/bindings/profile_binding.dart';
 import 'package:projectquranmu_application/bindings/teacher%20site/bukuprestasi_binding.dart';
 import 'package:projectquranmu_application/bindings/teacher%20site/inputharian_binding.dart';
@@ -60,7 +62,7 @@ class AppPages{
       GetPage(
       name: AppRoutes.homeortuPage, 
       page: ()=>HomeortuPage(),
-      binding: InputjilidBinding()
+      binding: HomeortuBinding()
       ),
       GetPage(
       name: AppRoutes.ortuattachmentPage, 
@@ -70,7 +72,7 @@ class AppPages{
       GetPage(
       name: AppRoutes.ortureportPage, 
       page: ()=>ReportortuPage(),
-      binding: AppBinding()
+      binding: ReportortuBinding()
       ),
       GetPage(
       name: AppRoutes.profilePage, 

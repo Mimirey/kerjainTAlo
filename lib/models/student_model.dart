@@ -6,6 +6,7 @@ class Student {
   final int guruId;
   final String? jilidSekarang;
   final String jenisKelamin;
+  final String guruName;
 
   final List<KenaikanJilidModel> kenaikanJilid;
 
@@ -15,6 +16,7 @@ class Student {
     required this.guruId,
     required this.jilidSekarang,
     required this.jenisKelamin,
+    required this.guruName,
     required this.kenaikanJilid,
   });
 
@@ -27,6 +29,8 @@ class Student {
       guruId: json['guruId'],
       jilidSekarang: json['jilidSekarang'],
       jenisKelamin: json['jenisKelamin'],
+
+      guruName: json['guru']?['nama'] ?? '-',
 
       kenaikanJilid: (json['kenaikanJilid'] as List)
           .map((e) => KenaikanJilidModel.fromJson(e))
