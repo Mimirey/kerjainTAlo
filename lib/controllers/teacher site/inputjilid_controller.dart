@@ -11,6 +11,9 @@ import 'package:projectquranmu_application/services/inputjilid_service.dart';
 
 class InputjilidController extends BaseAudioController {
   late BukuPrestasi student;
+  final jilidInfo = Rxn<Map<String, dynamic>>();
+  final isLoadingJilid = false.obs;
+
   String mapNilai(int value) {
     switch (value) {
       case 1:
@@ -38,7 +41,7 @@ class InputjilidController extends BaseAudioController {
   final InputJilidService inputJilidService = InputJilidService();
   final catatanController = TextEditingController();
   // state
-  var selectedJilid = "JILID_1".obs;
+  // var selectedJilid = "JILID_1".obs;
   var status = 0.obs;
   var tajwid = 0.obs;
   var makhraj = 0.obs;
@@ -92,6 +95,22 @@ class InputjilidController extends BaseAudioController {
   // // validasi (biar ga kosong pas submit)
   bool isValid() {
     return tajwid.value > 0 && makhraj.value > 0;
+  }
+
+  Future<void> fetchJilidInfo() async {
+    try {
+      isLoadingJilid.value = true;
+
+      final result = await inputJilidService.getJilidInfo(student.id);
+
+      jilidInfo.value = result;
+
+      print(result);
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingJilid.value = false;
+    }
   }
 
   Future<void> start() async {
@@ -175,23 +194,27 @@ class InputjilidController extends BaseAudioController {
     }
 
     try {
+      final statusKelulusan = mapKelulusan(status.value);
       await inputJilidService.submitKenaikanJilid(
         id: student.id,
-
-        jilid: selectedJilid.value,
-
         tajwid: mapNilai(tajwid.value),
-
         makhraj: mapNilai(makhraj.value),
-
-        statusKelulusan: mapKelulusan(status.value),
-
+        statusKelulusan: statusKelulusan,
         catatan: catatanController.text,
-
-        audioPath: audioPath.value,
+        audioPath: audioPath.value, 
+        jilid: jilidInfo.value?['jilidBerikutnya'],
       );
+      if (statusKelulusan == "LULUS") {
+        await inputJilidService.naikJilid(student.id);
+        print("JILID NAIK");
+      }
 
-      Get.snackbar("Berhasil", "Kenaikan jilid berhasil ditambahkan");
+      Get.snackbar(
+        "Berhasil",
+        statusKelulusan == "LULUS"
+            ? "Murid berhasil naik jilid"
+            : "Penilaian berhasil disimpan",
+      );
     } catch (e) {
       print(e);
 
@@ -202,6 +225,8 @@ class InputjilidController extends BaseAudioController {
   @override
   void onInit() {
     super.onInit();
+    student = Get.arguments as BukuPrestasi;
+    fetchJilidInfo();
 
     player.positionStream.listen((pos) {
       position.value = pos;

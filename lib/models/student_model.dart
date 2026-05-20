@@ -31,10 +31,10 @@ class Student {
       jenisKelamin: json['jenisKelamin'],
 
       guruName: json['guru']?['nama'] ?? '-',
-
-      kenaikanJilid: (json['kenaikanJilid'] as List)
-          .map((e) => KenaikanJilidModel.fromJson(e))
-          .toList(),
+      kenaikanJilid: (json['kenaikanJilid'] as List<dynamic>?)
+        ?.map((e) => KenaikanJilidModel.fromJson(e))
+        .toList() ??
+    [],
     );
   }
 }
