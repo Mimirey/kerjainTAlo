@@ -13,39 +13,52 @@ class InputJilidService {
     required String catatan,
     String? audioPath,
   }) async {
-    try{
-    FormData formData = FormData.fromMap({
-      "jilid": jilid,
-      "tajwid": tajwid,
-      "makhraj": makhraj,
-      "statusKelulusan": statusKelulusan,
-      "catatan": catatan,
+    try {
+      FormData formData = FormData.fromMap({
+        "muridId": id,
+        "jilid": jilid,
+        "tajwid": tajwid,
+        "makhraj": makhraj,
+        "statusKelulusan": statusKelulusan,
+        "catatan": catatan,
 
-      if (audioPath != null)
-        "audio": await MultipartFile.fromFile(
-          audioPath,
-          filename: audioPath.split('/').last,
-        ),
-    });
+        if (audioPath != null)
+          "audio": await MultipartFile.fromFile(
+            audioPath,
+            filename: audioPath.split('/').last,
+          ),
+      });
 
-    await ApiClient.dio.patch(
-      "kenaikan-jilid/$id",
-      data: formData,
-    );}
-    on DioException catch (e) {
-      final response = e.response;
+      final response = await ApiClient.dio.post(
+        "kenaikan-jilid",
+        data: formData,
+      );
 
+      print(response.data);
+    } on DioException catch (e) {
       print("STATUS: ${e.response?.statusCode}");
       print("DATA: ${e.response?.data}");
-      print("HEADERS: ${e.requestOptions.headers}");
-      print("PATH: ${e.requestOptions.path}");
 
-      // ambil pesan backend
-      if (response?.data != null) {
-        throw Exception(response?.data.toString());
-      }
-
-      throw Exception(e.message ?? "Terjadi kesalahan");
+      throw Exception(e.response?.data.toString());
     }
   }
+
+  Future<void> naikJilid(int muridId) async {
+    try {
+      await ApiClient.dio.patch("murid/$muridId/naik-jilid");
+    } on DioException catch (e) {
+      print(e.response?.data);
+      throw Exception(e.response?.data.toString());
+    }
   }
+
+  Future<Map<String, dynamic>> getJilidInfo(int studentId) async {
+    try {
+      final response = await ApiClient.dio.get("murid/$studentId/jilid");
+
+      return response.data["data"];
+    } on DioException catch (e) {
+      throw Exception(e.response?.data.toString());
+    }
+  }
+}

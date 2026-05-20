@@ -68,33 +68,28 @@ class InputjilidPage extends GetView<InputjilidController> {
                       ),
                     ),
 
-                    Obx(
-                      () => CustomDropdownJilid<String>(
-                        title: "Jilid Selanjutnya",
-                        value: controller.selectedJilid.value,
-                        icon: Icons.menu_book,
-                        items:
-                            [
-                              "JILID_1",
-                              "JILID_2",
-                              "JILID_3",
-                              "JILID_4",
-                              "JILID_5",
-                              "JILID_6",
-                              "JILID_7",
-                            ].map((jilid) {
-                              return DropdownMenuItem(
-                                value: jilid,
-                                child: Text(jilid),
-                              );
-                            }).toList(),
-                        onChanged: (value) {
-                          if (value != null) {
-                            controller.selectedJilid.value = value;
-                          }
-                        },
+                    Text(
+                      "Jilid Berikutnya",
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
                       ),
                     ),
+
+                    Obx(() {
+                      final data = controller.jilidInfo.value;
+
+                      if (data == null) {
+                        return CircularProgressIndicator();
+                      }
+
+                      return CustomTextField(
+                        hint: controller.student.jilidBerikutnya,
+                        borderColor: Colors.grey.shade400,
+                        enabled: false,
+                      );
+                    }),
 
                     Obx(
                       () => CustomSelectOptionGroup(

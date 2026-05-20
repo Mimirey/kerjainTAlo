@@ -14,48 +14,75 @@ class ProfilePage extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            CustomProfileheader(name: "Ferry Hidayat", email: "hidayat@gmail.com"),
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return CircularProgressIndicator();
+          }
 
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Informasi Akun",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
+          final data = controller.profile.value;
 
-                  const SizedBox(height: 20),
+          if (data == null) {
+            return Text("Tidak ada data");
+          }
 
-                  CustomProfilecard(
-                    icon: Icons.emoji_emotions_outlined,
-                    title: "Anak Terdaftar",
-                    items: ["Sylviana Jelita", "Arsya Muhammad Faisyar"],
-                  ),
+          return Column(
+            children: [
+              CustomProfileheader(name: data.nama, email: data.user.email),
 
-                  CustomProfilecard(
-                    icon: Icons.family_restroom,
-                    title: "Hubungan",
-                    items: ["Ayah"],
-                  ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Informasi Akun",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
 
-                  CustomProfilecard(
-                    icon: Icons.access_time,
-                    title: "Bergabung Sejak",
-                    items: ["10-01-2026"],
-                  ),
+                    if (data.user.role == "WALI_MURID") ...[
+                      CustomProfilecard(
+                        icon: Icons.child_care,
+                        title: "Anak Terdaftar",
+                        items: data.murid.map((e) => e.nama).toList(),
+                      ),
 
-                  const SizedBox(height: 30),
+                      CustomProfilecard(
+                        icon: Icons.family_restroom,
+                        title: "Hubungan",
+                        items: [data.peran ?? "-"],
+                      ),
+                    ],
 
-                  CustomLogoutButton(onTap: controller.logout),
-                ],
+                    if (data.user.role == "GURU") ...[
+                      CustomProfilecard(
+                        icon: Icons.school,
+                        title: "Murid Diajar",
+                        items: data.murid.map((e) => e.nama).toList(),
+                      ),
+
+                      CustomProfilecard(
+                        icon: Icons.groups,
+                        title: "Jumlah Murid",
+                        items: ["${data.murid.length} Murid"],
+                      ),
+
+                      CustomProfilecard(
+                        icon: Icons.phone,
+                        title: "No HP",
+                        items: [data.noHp ?? "-"],
+                      ),
+                    ],
+                    const SizedBox(height: 30),
+                    CustomLogoutButton(onTap: controller.logout),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        }),
       ),
     );
   }

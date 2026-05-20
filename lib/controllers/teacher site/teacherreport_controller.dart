@@ -9,6 +9,8 @@ class TeacherReportController extends GetxController {
   var filteredStudents = <Student>[].obs;
   final isLoading = false.obs;
   var query = ''.obs;
+  var selectedStatusLaporan = RxnString();
+  var selectedKelancaran = RxnString();
 
   @override
   void onInit() {
@@ -41,15 +43,54 @@ class TeacherReportController extends GetxController {
   void search(String value) {
     query.value = value;
 
-    final q = value.toLowerCase();
+    applyFilter(
+      statusLaporan: selectedStatusLaporan.value,
 
-    if (q.isEmpty) {
-      filteredStudents.value = allStudents;
-    } else {
-      filteredStudents.value = allStudents.where((student) {
-        return student.nama.toLowerCase().contains(q);
-            // student.jilidSekarang.toLowerCase.contains(q);
+      statusKelancaran: selectedKelancaran.value,
+    );
+  }
+
+  void applyFilter({String? statusLaporan, String? statusKelancaran}) {
+    selectedStatusLaporan.value = statusLaporan;
+
+    selectedKelancaran.value = statusKelancaran;
+
+    List<Student> result = List.from(allStudents);
+
+    if (statusLaporan != null && statusLaporan != "SEMUA") {
+      result = result.where((student) {
+        final hasReport = student.kenaikanJilid.isNotEmpty;
+
+        if (statusLaporan == "SUDAH") {
+          return hasReport;
+        }
+
+        if (statusLaporan == "BELUM") {
+          return !hasReport;
+        }
+
+        return true;
       }).toList();
     }
+
+    if (statusKelancaran != null) {
+      result = result.where((student) {
+        if (student.kenaikanJilid.isEmpty) {
+          return false;
+        }
+
+        final latest = student.kenaikanJilid.last;
+
+        return latest.tajwid == statusKelancaran ||
+            latest.makhraj == statusKelancaran;
+      }).toList();
+    }
+    if (query.value.isNotEmpty) {
+      result = result.where((student) {
+        return student.nama.toLowerCase().contains(query.value.toLowerCase());
+      }).toList();
+    }
+
+    filteredStudents.value = result;
   }
 }
